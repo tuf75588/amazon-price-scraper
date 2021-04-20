@@ -21,6 +21,32 @@ async function getPrices(product_id) {
   const { data: htmlData } = data;
   const dom = new JSDOM(htmlData);
   const $ = (selector) => dom.window.document.querySelector(selector);
+  const title = $('#aod-asin-title-text').textContent.trim();
+  const getOffer = (element) => {
+    const price = element.querySelector('.a-price .a-offscreen').textContent;
+    const offer_id = element
+      .querySelector('input[name="offeringID.1"]')
+      .getAttribute('value');
+    const ships_from = element
+      .querySelector('#aod-offer-shipsFrom .a-col-right .a-size-small')
+      .textContent.trim();
+    const sold_by = element
+      .querySelector('#aod-offer-soldBy .a-col-right .a-size-small')
+      .textContent.trim();
+    const delivery_message = element
+      .querySelector('#delivery-message')
+      .textContent.trim();
+    return {
+      price,
+      offer_id,
+      ships_from,
+      sold_by,
+    };
+  };
+  const pinnedElement = $('#pinned-de-id');
+  return getOffer(pinnedElement);
 }
 
-getPrices('B07CSKGLMM');
+const a = getPrices('B082TXR61K');
+
+a.then((data) => console.log(data));
